@@ -14,7 +14,7 @@ using StructureMap.AspNetCore;
 
 public class BenchmarkBase : IDisposable
 {
-    protected IWebHost _blueMilkHost;
+    protected IWebHost _lamarHost;
 
 
     public BenchmarkBase()
@@ -33,9 +33,9 @@ public class BenchmarkBase : IDisposable
             .UseServer(new NulloServer())
             .UseStartup<Startup>();
 
-        _blueMilkHost = builder.Start();
+        _lamarHost = builder.Start();
 
-        Instances = _blueMilkHost.Services.As<Container>().Model.AllInstances
+        Instances = _lamarHost.Services.As<Container>().Model.AllInstances
             .Where(x => x.ServiceType.Assembly != typeof(Container).Assembly && !x.ServiceType.IsOpenGeneric())
             .Where(x => x.ServiceType != typeof(IServiceProviderFactory<ServiceRegistry>))
             .ToArray();
@@ -79,13 +79,13 @@ public class BenchmarkBase : IDisposable
         
     }
 
-    public IContainer Lamar => _blueMilkHost.Services.As<IContainer>();
+    public IContainer Lamar => _lamarHost.Services.As<IContainer>();
 
     public Type[] Types { get; }
 
     public virtual void Dispose()
     {
-        _blueMilkHost?.Dispose();
+        _lamarHost?.Dispose();
 
     }
 
